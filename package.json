@@ -1,0 +1,46 @@
+{
+  "name": "autostream-monorepo",
+  "version": "1.0.0",
+  "description": "AutoStream: Fully On-Chain Token Streaming Protocol on Massa",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "clean": "npm run clean --workspaces",
+    "dev": "npm run dev --workspace=@autostream/frontend",
+    "contracts:build": "npm run build --workspace=@autostream/contracts",
+    "contracts:test": "npm run test --workspace=@autostream/contracts",
+    "contracts:deploy": "npm run deploy --workspace=@autostream/contracts",
+    "frontend:dev": "npm run dev --workspace=@autostream/frontend",
+    "frontend:build": "npm run build --workspace=@autostream/frontend",
+    "frontend:preview": "npm run preview --workspace=@autostream/frontend"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0",
+    "prettier": "^3.1.0",
+    "eslint": "^8.56.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/uok825/autostream-massa"
+  },
+  "keywords": [
+    "massa",
+    "blockchain",
+    "streaming",
+    "defi",
+    "autonomous-smart-contracts",
+    "deweb"
+  ],
+  "author": "AutoStream Team",
+  "license": "MIT"
+}

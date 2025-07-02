@@ -1,0 +1,29 @@
+{
+  "name": "@autostream/contracts",
+  "version": "1.0.0",
+  "description": "AutoStream Smart Contracts for Massa",
+  "private": true,
+  "main": "build/main.js",
+  "scripts": {
+    "build": "asc assembly/contracts/StreamManager.ts --outFile build/StreamManager.wasm --bindings --transform @massalabs/as-transformer",
+    "build:stream": "asc assembly/contracts/Stream.ts --outFile build/Stream.wasm --bindings --transform @massalabs/as-transformer",
+    "build:token": "asc assembly/contracts/TokenWrapper.ts --outFile build/TokenWrapper.wasm --bindings --transform @massalabs/as-transformer",
+    "build:all": "npm run build && npm run build:stream && npm run build:token",
+    "test": "npm run build:all && node tests/run-tests.js",
+    "deploy": "node scripts/deploy.js",
+    "clean": "rm -rf build/"
+  },
+  "dependencies": {
+    "@massalabs/massa-sc-std": "^0.4.0",
+    "@massalabs/as-types": "^0.4.0"
+  },
+  "devDependencies": {
+    "@massalabs/as-transformer": "^0.4.0",
+    "assemblyscript": "^0.27.0",
+    "@massalabs/massa-sc-deployer": "^0.4.0"
+  },
+  "files": [
+    "build/**/*",
+    "assembly/**/*"
+  ]
+} 

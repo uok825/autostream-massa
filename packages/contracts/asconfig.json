@@ -1,23 +1,30 @@
 {
-  "targets": {
-    "debug": {
-      "outFile": "build/debug.wasm",
-      "textFile": "build/debug.wat",
-      "sourceMap": true,
-      "debug": true
-    },
-    "release": {
-      "outFile": "build/release.wasm",
-      "textFile": "build/release.wat",
-      "sourceMap": true,
-      "optimizeLevel": 3,
-      "shrinkLevel": 0,
-      "converge": false,
-      "noAssert": false
-    }
-  },
+  "entries": [
+    "assembly/contracts/SimpleStreamManager.ts",
+    "assembly/contracts/StreamManagerClean.ts",
+    "assembly/contracts/StreamManagerV2.ts"
+  ],
   "options": {
     "bindings": "esm",
-    "runtime": "stub"
+    "exportRuntime": true,
+    "runtime": "stub",
+    "optimizeLevel": 3,
+    "shrinkLevel": 1,
+    "noAssert": false,
+    "debug": false
+  },
+  "targets": {
+    "release": {
+      "outDir": "build",
+      "optimize": true,
+      "noAssert": true,
+      "bindings": "esm"
+    },
+    "debug": {
+      "outDir": "build/debug",
+      "debug": true,
+      "optimize": false,
+      "sourceMap": true
+    }
   }
-} 
+}

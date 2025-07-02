@@ -5,11 +5,11 @@
   "private": true,
   "main": "build/main.js",
   "scripts": {
-    "build": "node scripts/build.js build",
-    "build:clean": "node scripts/build.js clean",
-    "build:rebuild": "node scripts/build.js rebuild",
+    "build": "asc --config asconfig.json --target release",
+    "build:clean": "rm -rf build/ && npm run build",
+    "build:debug": "asc --config asconfig.json --target debug",
     "build:demo": "echo 'Using JavaScript demo - no compilation needed'",
-    "build:simple": "tsc assembly/contracts/SimpleStreamManager.ts --outDir build --target ES2020",
+    "build:simple": "asc assembly/contracts/SimpleStreamManager.ts --outFile build/SimpleStreamManager.wasm --optimize",
     "build:all": "npm run build",
     "test": "node tests/run-tests.js tests/StreamManager.test.js",
     "test:unit": "node tests/run-tests.js tests/StreamManager.test.js",
@@ -30,9 +30,8 @@
     "@massalabs/massa-sc-utils": "^2.2.0"
   },
   "devDependencies": {
-    "@massalabs/massa-sc-compiler": "^0.2.0",
     "@massalabs/massa-sc-deployer": "^2.2.0",
-    "assemblyscript": "^0.27.0",
+    "assemblyscript": "^0.27.29",
     "typescript": "^5.3.0"
   },
   "files": [

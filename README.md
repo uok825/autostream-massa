@@ -10,7 +10,7 @@ AutoStream is a revolutionary decentralized smart contract system that enables a
 
 - 🔄 **Fully Autonomous**: No external keepers or oracles needed
 - ⚡ **Instant Setup**: Create streams in seconds
-- 🛡️ **Completely On-Chain**: Built on Massa's unique ASC technology  
+- 🛡️ **Completely On-Chain**: Built on Massa's unique ASC technology
 - 🎯 **Flexible Intervals**: Per-second, per-block, or custom intervals
 - 💼 **Multiple Use Cases**: Payroll, vesting, subscriptions, donations
 - 🌐 **DeWeb Frontend**: Hosted entirely on-chain
@@ -33,43 +33,46 @@ AutoStream/
 
 ## 🎯 Use Cases
 
-| Use Case | Description |
-|----------|-------------|
-| 💼 **Payroll Automation** | DAOs stream salaries per block/week/month |
-| 🛠️ **Contributor Vesting** | Gradual token release for developers |
-| 💸 **Subscriptions** | Small recurring fees for on-chain services |
-| 🎓 **Scholarships** | Monthly payments from funding DAOs |
-| 🌍 **Micro-donations** | 0.01 MAS/day to public goods |
+| Use Case                   | Description                                |
+| -------------------------- | ------------------------------------------ |
+| 💼 **Payroll Automation**  | DAOs stream salaries per block/week/month  |
+| 🛠️ **Contributor Vesting** | Gradual token release for developers       |
+| 💸 **Subscriptions**       | Small recurring fees for on-chain services |
+| 🎓 **Scholarships**        | Monthly payments from funding DAOs         |
+| 🌍 **Micro-donations**     | 0.01 MAS/day to public goods               |
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ 
-- npm 9+
+- Node.js 18+
 - Massa wallet (Bearby or Station)
 
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone https://github.com/uok825/autostream-massa
 cd autostream-massa
 ```
 
 2. **Install dependencies**
+
 ```bash
-npm install
+bun install
 ```
 
 3. **Build all packages**
+
 ```bash
-npm run build
+bun run build
 ```
 
 4. **Start development server**
+
 ```bash
-npm run dev
+bun run dev
 ```
 
 The frontend will be available at `http://localhost:3000`
@@ -77,25 +80,28 @@ The frontend will be available at `http://localhost:3000`
 ## 📦 Package Scripts
 
 ### Root Scripts
+
 ```bash
-npm run build           # Build all packages
-npm run test           # Run all tests
-npm run dev            # Start frontend dev server
-npm run clean          # Clean all build artifacts
+bun run build           # Build all packages
+bun run test           # Run all tests
+bun run dev            # Start frontend dev server
+bun run clean          # Clean all build artifacts
 ```
 
 ### Smart Contracts
+
 ```bash
-npm run contracts:build    # Build all contracts
-npm run contracts:test     # Run contract tests
-npm run contracts:deploy   # Deploy to Massa network
+bun run contracts:build    # Build all contracts
+bun run contracts:test     # Run contract tests
+bun run contracts:deploy   # Deploy to Massa network
 ```
 
 ### Frontend
+
 ```bash
-npm run frontend:dev       # Start dev server
-npm run frontend:build     # Build for production
-npm run frontend:preview   # Preview production build
+bun run frontend:dev       # Start dev server
+bun run frontend:build     # Build for production
+bun run frontend:preview   # Preview production build
 ```
 
 ## 🔧 Development
@@ -111,10 +117,11 @@ export function createStream(
   duration: u64,
   streamType: u8,
   intervalSeconds: u64
-): u64
+): u64;
 ```
 
 Key contracts:
+
 - **StreamManager.ts**: Main contract handling stream creation and management
 - **Stream.ts**: Individual stream logic with deferred execution
 - **TokenWrapper.ts**: MAS and ERC20-like token support
@@ -133,16 +140,18 @@ Built with **React + Vite** for optimal DeWeb performance:
 ### Smart Contracts
 
 Deploy to Massa testnet:
+
 ```bash
 cd packages/contracts
-npm run deploy
+bun run deploy
 ```
 
 ### DeWeb Frontend
 
 Build for DeWeb deployment:
+
 ```bash
-npm run frontend:build
+bun run frontend:build
 ```
 
 The `dist/` folder contains the complete frontend ready for DeWeb hosting.
@@ -150,18 +159,21 @@ The `dist/` folder contains the complete frontend ready for DeWeb hosting.
 ## 🧪 Testing
 
 ### Contract Tests
+
 ```bash
-npm run contracts:test
+bun run contracts:test
 ```
 
 ### Frontend Tests
+
 ```bash
-npm run frontend:test
+bun run frontend:test
 ```
 
 ### E2E Tests
+
 ```bash
-npm run test:e2e
+bun run test:e2e
 ```
 
 ## 🛠️ Technical Implementation
@@ -204,18 +216,21 @@ struct StreamData {
 ## 🚧 Roadmap
 
 ### Phase 1: Core Features ✅
+
 - [x] Basic streaming functionality
 - [x] Deferred call integration
 - [x] Frontend interface
 - [x] Wallet integration
 
 ### Phase 2: Advanced Features 🚧
+
 - [ ] Multi-token support
 - [ ] NFT streams
 - [ ] Conditional logic
 - [ ] IPFS metadata
 
 ### Phase 3: Ecosystem 🔮
+
 - [ ] DEX integration
 - [ ] DAO tooling
 - [ ] Mobile app
@@ -223,4 +238,4 @@ struct StreamData {
 
 ---
 
-*"Making token streaming as simple as turning on a faucet"* 
+_"Making token streaming as simple as turning on a faucet"_

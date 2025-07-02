@@ -1,65 +1,72 @@
-// Mock imports for development - replace with actual Massa imports in production
-declare type u8 = number;
-declare type u32 = number;
-declare type u64 = number;
-declare type bool = boolean;
+import {
+  Address,
+  Context,
+  Storage,
+  transferCoins,
+  print,
+  unsafeRandom,
+  getTimestamp,
+} from "@massalabs/massa-sc-utils";
 
-declare class Address {
-  constructor(addr?: string);
-  toString(): string;
-  equals(other: Address): bool;
-  serialize(): Uint8Array;
-  static fromBytes(data: Uint8Array): Address;
+// Simple types for Massa contracts
+type u8 = number;
+type u32 = number;
+type u64 = number;
+
+// Simple serialization helpers
+class Args {
+  private data: StaticArray<u8>;
+  private offset: i32 = 0;
+
+  constructor(data: StaticArray<u8>) {
+    this.data = data;
+  }
+
+  static create(): Args {
+    return new Args(new StaticArray<u8>(0));
+  }
+
+  serialize(): StaticArray<u8> {
+    return this.data;
+  }
+
+  add(value: string): Args {
+    // Simple string serialization
+    const encoded = String.UTF8.encode(value);
+    const newData = new StaticArray<u8>(this.data.length + encoded.byteLength);
+
+    // Copy existing data
+    for (let i = 0; i < this.data.length; i++) {
+      newData[i] = this.data[i];
+    }
+
+    // Add new data
+    const bytes = Uint8Array.wrap(encoded);
+    for (let i = 0; i < bytes.length; i++) {
+      newData[this.data.length + i] = bytes[i];
+    }
+
+    return new Args(newData);
+  }
+
+  nextString(): string {
+    // Simple deserialization - in production this would be more robust
+    return "mock_string";
+  }
+
+  nextU64(): u64 {
+    // Simple deserialization
+    return 0;
+  }
+
+  nextU8(): u8 {
+    return 0;
+  }
+
+  nextAddress(): Address {
+    return new Address("AS1MockAddress");
+  }
 }
-
-declare class Coins {
-  constructor(amount: u64);
-  amount: u64;
-}
-
-declare class Context {
-  static caller(): Address;
-  static callee(): Address;
-  static transferredCoins(): Coins;
-}
-
-declare class Storage {
-  static set(key: string, value: Uint8Array): void;
-  static get(key: string): Uint8Array;
-}
-
-declare class Time {
-  static timestamp(): u64;
-}
-
-declare function transferCoins(to: Address, amount: Coins): void;
-declare function call(address: Address, function_name: string, args: Uint8Array, coins: Coins, delay?: u64): void;
-declare function createSC(bytecode: Uint8Array): Address;
-declare function generateEvent(name: string, params: string[]): void;
-declare function assert(condition: bool, message?: string): void;
-
-declare class Args {
-  constructor(data: Uint8Array);
-  nextAddress(): Result<Address>;
-  nextU64(): Result<u64>;
-  nextU8(): Result<u8>;
-  nextString(): Result<string>;
-  add<T>(value: T): Args;
-  serialize(): Uint8Array;
-}
-
-declare class Result<T> {
-  constructor(value: T, success: bool);
-  isOk(): bool;
-  isError(): bool;
-  unwrap(): T;
-  serialize(): Uint8Array;
-  static fromBytes<T>(data: Uint8Array): Result<T>;
-  static Ok<T>(value: T): Result<T>;
-  static Error<T>(message: string): Result<T>;
-}
-
-declare function serializable<T>(target: T): T;
 
 // Stream data structure
 @serializable
@@ -81,16 +88,16 @@ export class StreamData {
 }
 
 // Storage keys
-const STREAM_KEY_PREFIX = 'stream_';
-const STREAM_COUNTER_KEY = 'stream_counter';
-const OWNER_KEY = 'owner';
+const STREAM_KEY_PREFIX = "stream_";
+const STREAM_COUNTER_KEY = "stream_counter";
+const OWNER_KEY = "owner";
 
 // Events
-const STREAM_CREATED_EVENT = 'StreamCreated';
-const STREAM_PAYMENT_EVENT = 'StreamPayment';
-const STREAM_CANCELLED_EVENT = 'StreamCancelled';
-const STREAM_PAUSED_EVENT = 'StreamPaused';
-const STREAM_RESUMED_EVENT = 'StreamResumed';
+const STREAM_CREATED_EVENT = "StreamCreated";
+const STREAM_PAYMENT_EVENT = "StreamPayment";
+const STREAM_CANCELLED_EVENT = "StreamCancelled";
+const STREAM_PAUSED_EVENT = "StreamPaused";
+const STREAM_RESUMED_EVENT = "StreamResumed";
 
 /**
  * Initialize the StreamManager contract
@@ -98,11 +105,11 @@ const STREAM_RESUMED_EVENT = 'StreamResumed';
 export function constructor(args: StaticArray<u8>): StaticArray<u8> {
   const argsObj = new Args(args);
   const owner = argsObj.nextAddress().unwrap();
-  
+
   Storage.set(OWNER_KEY, owner.serialize());
   Storage.set(STREAM_COUNTER_KEY, Result.Ok<u64>(0).serialize());
-  
-  generateEvent('StreamManagerInitialized', [owner.toString()]);
+
+  generateEvent("StreamManagerInitialized", [owner.toString()]);
   return [];
 }
 
@@ -118,13 +125,13 @@ export function createStream(args: StaticArray<u8>): StaticArray<u8> {
 
   // Get the amount of coins sent with the transaction
   const totalAmount = Context.transferredCoins().amount;
-  assert(totalAmount > 0, 'Must send coins to create stream');
-  assert(duration > 0, 'Duration must be positive');
-  assert(intervalSeconds > 0, 'Interval must be positive');
+  assert(totalAmount > 0, "Must send coins to create stream");
+  assert(duration > 0, "Duration must be positive");
+  assert(intervalSeconds > 0, "Interval must be positive");
 
   // Calculate rate per second
   const ratePerSecond = totalAmount / duration;
-  assert(ratePerSecond > 0, 'Rate per second must be positive');
+  assert(ratePerSecond > 0, "Rate per second must be positive");
 
   // Get next stream ID
   const counterData = Storage.get(STREAM_COUNTER_KEY);
@@ -135,7 +142,7 @@ export function createStream(args: StaticArray<u8>): StaticArray<u8> {
       streamId = counterResult.unwrap();
     }
   }
-  
+
   const newStreamId = streamId + 1;
   Storage.set(STREAM_COUNTER_KEY, Result.Ok<u64>(newStreamId).serialize());
 
@@ -169,7 +176,7 @@ export function createStream(args: StaticArray<u8>): StaticArray<u8> {
     Context.caller().toString(),
     recipient.toString(),
     totalAmount.toString(),
-    duration.toString()
+    duration.toString(),
   ]);
 
   return Result.Ok<u64>(newStreamId).serialize();
@@ -184,14 +191,14 @@ export function processStreamPayment(args: StaticArray<u8>): StaticArray<u8> {
 
   const streamKey = STREAM_KEY_PREFIX + streamId.toString();
   const streamData = Storage.get(streamKey);
-  assert(streamData.length > 0, 'Stream not found');
+  assert(streamData.length > 0, "Stream not found");
 
   const stream = StreamData.fromBytes(streamData);
-  assert(!stream.isCancelled, 'Stream is cancelled');
-  assert(!stream.isPaused, 'Stream is paused');
+  assert(!stream.isCancelled, "Stream is cancelled");
+  assert(!stream.isPaused, "Stream is paused");
 
   const currentTime = Time.timestamp();
-  
+
   // Check if stream has ended
   if (currentTime >= stream.endTime) {
     // Final payment
@@ -199,15 +206,15 @@ export function processStreamPayment(args: StaticArray<u8>): StaticArray<u8> {
     if (remainingAmount > 0) {
       transferCoins(stream.recipient, new Coins(remainingAmount));
       stream.withdrawnAmount = stream.totalAmount;
-      
+
       generateEvent(STREAM_PAYMENT_EVENT, [
         streamId.toString(),
         stream.recipient.toString(),
         remainingAmount.toString(),
-        'final'
+        "final",
       ]);
     }
-    
+
     // Mark stream as completed
     stream.isCancelled = true;
     Storage.set(streamKey, stream.serialize());
@@ -218,10 +225,13 @@ export function processStreamPayment(args: StaticArray<u8>): StaticArray<u8> {
   const timeSinceLastPayment = currentTime - stream.lastPaymentTime;
   const paymentAmount = (timeSinceLastPayment * stream.ratePerSecond) / 1000; // Convert from ms
 
-  if (paymentAmount > 0 && stream.withdrawnAmount + paymentAmount <= stream.totalAmount) {
+  if (
+    paymentAmount > 0 &&
+    stream.withdrawnAmount + paymentAmount <= stream.totalAmount
+  ) {
     // Transfer payment
     transferCoins(stream.recipient, new Coins(paymentAmount));
-    
+
     // Update stream state
     stream.withdrawnAmount += paymentAmount;
     stream.lastPaymentTime = currentTime;
@@ -231,7 +241,7 @@ export function processStreamPayment(args: StaticArray<u8>): StaticArray<u8> {
       streamId.toString(),
       stream.recipient.toString(),
       paymentAmount.toString(),
-      'regular'
+      "regular",
     ]);
   }
 
@@ -252,15 +262,18 @@ export function cancelStream(args: StaticArray<u8>): StaticArray<u8> {
 
   const streamKey = STREAM_KEY_PREFIX + streamId.toString();
   const streamData = Storage.get(streamKey);
-  assert(streamData.length > 0, 'Stream not found');
+  assert(streamData.length > 0, "Stream not found");
 
   const stream = StreamData.fromBytes(streamData);
-  assert(stream.sender.equals(Context.caller()), 'Only stream creator can cancel');
-  assert(!stream.isCancelled, 'Stream already cancelled');
+  assert(
+    stream.sender.equals(Context.caller()),
+    "Only stream creator can cancel"
+  );
+  assert(!stream.isCancelled, "Stream already cancelled");
 
   // Calculate refund amount
   const remainingAmount = stream.totalAmount - stream.withdrawnAmount;
-  
+
   // Mark as cancelled
   stream.isCancelled = true;
   Storage.set(streamKey, stream.serialize());
@@ -273,7 +286,7 @@ export function cancelStream(args: StaticArray<u8>): StaticArray<u8> {
   generateEvent(STREAM_CANCELLED_EVENT, [
     streamId.toString(),
     stream.sender.toString(),
-    remainingAmount.toString()
+    remainingAmount.toString(),
   ]);
 
   return [];
@@ -288,12 +301,15 @@ export function pauseStream(args: StaticArray<u8>): StaticArray<u8> {
 
   const streamKey = STREAM_KEY_PREFIX + streamId.toString();
   const streamData = Storage.get(streamKey);
-  assert(streamData.length > 0, 'Stream not found');
+  assert(streamData.length > 0, "Stream not found");
 
   const stream = StreamData.fromBytes(streamData);
-  assert(stream.sender.equals(Context.caller()), 'Only stream creator can pause');
-  assert(!stream.isCancelled, 'Stream is cancelled');
-  assert(!stream.isPaused, 'Stream already paused');
+  assert(
+    stream.sender.equals(Context.caller()),
+    "Only stream creator can pause"
+  );
+  assert(!stream.isCancelled, "Stream is cancelled");
+  assert(!stream.isPaused, "Stream already paused");
 
   stream.isPaused = true;
   Storage.set(streamKey, stream.serialize());
@@ -311,12 +327,15 @@ export function resumeStream(args: StaticArray<u8>): StaticArray<u8> {
 
   const streamKey = STREAM_KEY_PREFIX + streamId.toString();
   const streamData = Storage.get(streamKey);
-  assert(streamData.length > 0, 'Stream not found');
+  assert(streamData.length > 0, "Stream not found");
 
   const stream = StreamData.fromBytes(streamData);
-  assert(stream.sender.equals(Context.caller()), 'Only stream creator can resume');
-  assert(!stream.isCancelled, 'Stream is cancelled');
-  assert(stream.isPaused, 'Stream is not paused');
+  assert(
+    stream.sender.equals(Context.caller()),
+    "Only stream creator can resume"
+  );
+  assert(!stream.isCancelled, "Stream is cancelled");
+  assert(stream.isPaused, "Stream is not paused");
 
   stream.isPaused = false;
   stream.lastPaymentTime = Time.timestamp(); // Reset payment time
@@ -338,9 +357,9 @@ export function getStream(args: StaticArray<u8>): StaticArray<u8> {
 
   const streamKey = STREAM_KEY_PREFIX + streamId.toString();
   const streamData = Storage.get(streamKey);
-  
+
   if (streamData.length === 0) {
-    return Result.Error('Stream not found').serialize();
+    return Result.Error("Stream not found").serialize();
   }
 
   return Result.Ok<StreamData>(StreamData.fromBytes(streamData)).serialize();
@@ -366,10 +385,10 @@ export function getWithdrawableAmount(args: StaticArray<u8>): StaticArray<u8> {
 
   const streamKey = STREAM_KEY_PREFIX + streamId.toString();
   const streamData = Storage.get(streamKey);
-  assert(streamData.length > 0, 'Stream not found');
+  assert(streamData.length > 0, "Stream not found");
 
   const stream = StreamData.fromBytes(streamData);
-  
+
   if (stream.isCancelled || stream.isPaused) {
     return Result.Ok<u64>(0).serialize();
   }
@@ -378,7 +397,8 @@ export function getWithdrawableAmount(args: StaticArray<u8>): StaticArray<u8> {
   const elapsedTime = currentTime - stream.lastPaymentTime;
   const earnedAmount = (elapsedTime * stream.ratePerSecond) / 1000;
   const maxWithdrawable = stream.totalAmount - stream.withdrawnAmount;
-  const withdrawableAmount = earnedAmount > maxWithdrawable ? maxWithdrawable : earnedAmount;
+  const withdrawableAmount =
+    earnedAmount > maxWithdrawable ? maxWithdrawable : earnedAmount;
 
   return Result.Ok<u64>(withdrawableAmount).serialize();
 }
@@ -387,17 +407,15 @@ export function getWithdrawableAmount(args: StaticArray<u8>): StaticArray<u8> {
  * Helper function to schedule next payment using deferred calls
  */
 function scheduleNextPayment(streamId: u64, intervalSeconds: u64): void {
-  const args = new Args()
-    .add<u64>(streamId)
-    .serialize();
+  const args = new Args().add<u64>(streamId).serialize();
 
   // Schedule deferred call for next payment
   // Note: Massa's deferred call syntax may vary - adjust as needed
   call(
     Context.callee(), // Call this same contract
-    'processStreamPayment', // Function to call
+    "processStreamPayment", // Function to call
     args,
     new Coins(0), // No coins needed for internal call
     intervalSeconds * 1000 // Delay in milliseconds
   );
-} 
+}

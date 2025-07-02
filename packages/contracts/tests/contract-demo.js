@@ -1,4 +1,4 @@
-/**
+bun; /**
  * AutoStream Contract Demo
  * Demonstrates the streaming contract functionality
  */

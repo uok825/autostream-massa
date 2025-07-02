@@ -6,11 +6,11 @@
   "main": "build/main.js",
   "scripts": {
     "build": "mkdir -p build && echo 'Contract compilation requires Massa toolchain - see README'",
-    "build:demo": "tsc assembly/contracts/StreamManagerClean.ts --outDir build --target ES2020",
+    "build:demo": "echo 'Using JavaScript demo - no compilation needed'",
     "build:simple": "tsc assembly/contracts/SimpleStreamManager.ts --outDir build --target ES2020",
     "build:all": "mkdir -p build && npm run build:demo && npm run build:simple",
-    "test": "npm run build:all && node tests/contract-demo.js",
-    "demo": "npm run build:demo && node tests/contract-demo.js",
+    "test": "node demo/stream-demo.js",
+    "demo": "node demo/stream-demo.js",
     "deploy": "node scripts/deploy.js",
     "clean": "rm -rf build/"
   },

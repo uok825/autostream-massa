@@ -46,36 +46,47 @@ AutoStream/
 ### Prerequisites
 
 - Node.js 18+
-- Massa wallet (Bearby or Station)
+- npm 9+ (or bun for faster installs)
+- Massa wallet (Bearby or Station) - for frontend testing
 
 ### Installation
 
-1. **Clone the repository**
+1. **Install dependencies**
 
 ```bash
-git clone https://github.com/uok825/autostream-massa
-cd autostream-massa
-```
-
-2. **Install dependencies**
-
-```bash
+npm install
+# or for faster installs:
 bun install
 ```
 
-3. **Build all packages**
+2. **Run the contract demo**
 
 ```bash
-bun run build
+cd packages/contracts
+npm run demo
 ```
 
-4. **Start development server**
+3. **Start the frontend**
 
 ```bash
-bun run dev
+npm run dev
 ```
 
 The frontend will be available at `http://localhost:3000`
+
+### 🎯 Try the Demo
+
+The contract demo shows AutoStream's core functionality:
+
+- Stream creation and management
+- Automated payment processing
+- Pause/resume/cancel operations
+- Real-time balance calculations
+
+```bash
+cd packages/contracts
+npm run demo
+```
 
 ## 📦 Package Scripts
 

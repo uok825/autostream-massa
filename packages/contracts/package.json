@@ -5,14 +5,26 @@
   "private": true,
   "main": "build/main.js",
   "scripts": {
-    "build": "mkdir -p build && echo 'Contract compilation requires Massa toolchain - see README'",
+    "build": "node scripts/build.js build",
+    "build:clean": "node scripts/build.js clean",
+    "build:rebuild": "node scripts/build.js rebuild",
     "build:demo": "echo 'Using JavaScript demo - no compilation needed'",
     "build:simple": "tsc assembly/contracts/SimpleStreamManager.ts --outDir build --target ES2020",
-    "build:all": "mkdir -p build && npm run build:demo && npm run build:simple",
-    "test": "node demo/stream-demo.js",
+    "build:all": "npm run build",
+    "test": "node tests/run-tests.js tests/StreamManager.test.js",
+    "test:unit": "node tests/run-tests.js tests/StreamManager.test.js",
+    "test:integration": "node tests/run-tests.js tests/integration.test.js",
+    "test:all": "npm run test:unit && npm run test:integration",
     "demo": "node demo/stream-demo.js",
     "deploy": "node scripts/deploy.js",
-    "clean": "rm -rf build/"
+    "deploy:real": "node scripts/deploy-real.js deploy",
+    "deploy:testnet": "node scripts/deploy-real.js deploy testnet",
+    "deploy:buildnet": "node scripts/deploy-real.js deploy buildnet",
+    "deploy:mainnet": "node scripts/deploy-real.js deploy mainnet",
+    "verify": "node scripts/deploy-real.js verify",
+    "load-deployment": "node scripts/deploy-real.js load",
+    "call-contract": "node scripts/deploy-real.js call",
+    "clean": "rm -rf build/ deployments/"
   },
   "dependencies": {
     "@massalabs/massa-sc-utils": "^2.2.0"

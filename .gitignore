@@ -132,3 +132,4 @@ packages/frontend/storybook-static/
 test-results/
 playwright-report/
 playwright/.cache/ 
+.vercel

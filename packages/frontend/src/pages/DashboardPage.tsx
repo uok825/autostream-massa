@@ -1,5 +1,3 @@
-import React from 'react'
-
 export function DashboardPage() {
   return (
     <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
@@ -7,5 +5,5 @@ export function DashboardPage() {
       <p className="mt-2 text-gray-600">View and manage your token streams</p>
       {/* Dashboard content will be implemented */}
     </div>
-  )
-} 
+  );
+}

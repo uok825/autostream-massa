@@ -1,13 +1,12 @@
-import React from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
-import { WalletProvider } from '@/providers/WalletProvider'
-import { Layout } from '@/components/Layout'
-import { HomePage } from '@/pages/HomePage'
-import { CreateStreamPage } from '@/pages/CreateStreamPage'
-import { DashboardPage } from '@/pages/DashboardPage'
-import { StreamDetailsPage } from '@/pages/StreamDetailsPage'
-import '@/styles/globals.css'
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { WalletProvider } from "@/providers/WalletProvider";
+import { Layout } from "@/components/Layout";
+import { HomePage } from "@/pages/HomePage";
+import { CreateStreamPage } from "@/pages/CreateStreamPage";
+import { DashboardPage } from "@/pages/DashboardPage";
+import { StreamDetailsPage } from "@/pages/StreamDetailsPage";
+import "@/styles/globals.css";
 
 function App() {
   return (
@@ -22,17 +21,17 @@ function App() {
               <Route path="/stream/:id" element={<StreamDetailsPage />} />
             </Routes>
           </Layout>
-          <Toaster 
+          <Toaster
             position="top-right"
             toastOptions={{
               duration: 4000,
-              className: 'bg-white border border-gray-200 shadow-lg',
+              className: "bg-white border border-gray-200 shadow-lg",
             }}
           />
         </div>
       </Router>
     </WalletProvider>
-  )
+  );
 }
 
-export default App 
+export default App;

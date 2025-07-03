@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   useContext,
   useState,
@@ -6,7 +6,6 @@ import React, {
   ReactNode,
 } from "react";
 import { getWallets, Wallet, WalletName } from "@massalabs/wallet-provider";
-import { IBalance, NetworkName } from "@massalabs/massa-web3";
 
 interface WalletContextType {
   isConnected: boolean;
@@ -113,14 +112,14 @@ export function WalletProvider({ children }: WalletProviderProps) {
       const networkInfo = await selectedWallet.networkInfos();
 
       // Get balance
-      const accountBalance = await firstAccount.balance();
+      const accountBalance = await firstAccount.balance(true);
 
       setWallet(selectedWallet);
       setProvider(firstAccount);
       setNetwork(networkInfo);
       setIsConnected(true);
       setAddress(firstAccount.address);
-      setBalance(`${(Number(accountBalance.final) / 1e9).toFixed(2)} MAS`); // Convert from nanoMAS to MAS
+      setBalance(`${(Number(accountBalance) / 1e9).toFixed(2)} MAS`); // Convert from nanoMAS to MAS
 
       // Listen for account changes
       selectedWallet.listenAccountChanges?.((newAddress: string) => {
